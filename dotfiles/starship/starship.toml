@@ -1,0 +1,88 @@
+# Starship Configuration
+# https://starship.rs/config/
+
+# Timeout para comandos
+command_timeout = 1000
+
+# Formato do prompt
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$python\
+$golang\
+$rust\
+$docker_context\
+$kubernetes\
+$aws\
+$line_break\
+$character"""
+
+# Caractere do prompt
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+# Diretório
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold cyan"
+
+# Git Branch
+[git_branch]
+symbol = " "
+style = "bold purple"
+
+# Git Status
+[git_status]
+style = "bold red"
+conflicted = "="
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+stashed = "📦"
+modified = "!${count}"
+staged = "+${count}"
+renamed = "»${count}"
+deleted = "✘${count}"
+
+# Node.js
+[nodejs]
+symbol = " "
+style = "bold green"
+
+# Python
+[python]
+symbol = " "
+style = "bold yellow"
+
+# Go
+[golang]
+symbol = " "
+style = "bold cyan"
+
+# Rust
+[rust]
+symbol = " "
+style = "bold red"
+
+# Docker
+[docker_context]
+symbol = " "
+style = "bold blue"
+
+# Kubernetes
+[kubernetes]
+disabled = false
+symbol = "☸ "
+style = "bold blue"
+
+# AWS
+[aws]
+symbol = " "
+style = "bold orange"

@@ -1,0 +1,8 @@
+{
+  "name": "gravidade-plugin",
+  "version": "1.0.0",
+  "description": "Gravidade Personal Configs, Custom Skills, Commands, and Lifecycle Hooks for Antigravity CLI.",
+  "author": {
+    "name": "Samuel / Felipeness"
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "bash-pre-checks": {
+    "PreToolUse": [
+      {
+        "matcher": "^run_command$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/bash-pre-checks.js",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  },
+  "pipeline-precheck": {
+    "PreToolUse": [
+      {
+        "matcher": "^view_file$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/pipeline-precheck.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "enforce-design-first": {
+    "PreToolUse": [
+      {
+        "matcher": "^(write_to_file|replace_file_content|multi_replace_file_content)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/enforce-design-first.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "code-validation-post-edit": {
+    "PostToolUse": [
+      {
+        "matcher": "^(write_to_file|replace_file_content|multi_replace_file_content)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/typecheck-after-edit.js",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "node ./hooks/lint-after-edit.js",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "node ./hooks/pipeline-gate.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "git-post-command": {
+    "PostToolUse": [
+      {
+        "matcher": "^run_command$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/mirror-pr-reminder.js",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "node ./hooks/validate-pr-body.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "ralph-stop-gate": {
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/ralph-stop-hook.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "post-compact-context": {
+    "SessionStart": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/post-compact-context.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "cleanup-temp-files": {
+    "SessionEnd": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/cleanup-temp-files.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "teammate-idle": {
+    "TeammateIdle": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/teammate-idle-check.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "task-created-validate": {
+    "TaskCreated": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/task-created-validate.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "task-completed-verify": {
+    "TaskCompleted": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ./hooks/task-completed-verify.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

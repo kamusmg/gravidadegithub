@@ -88,3 +88,13 @@ Para colar capturas de tela e prints diretamente no chat:
 - `gl` $\rightarrow$ `git log` formatado de 20 linhas em grafo
 - `dps` $\rightarrow$ `docker ps` formatado e limpo
 - `aliases` $\rightarrow$ Lista todos os atalhos ativos
+
+### 4. Comandos Especiais no Chat (Slash Commands)
+Dentro do chat do Antigravity CLI (`agy`), você pode utilizar os seguintes comandos iniciando com `/` para controle de fluxo e sessões:
+
+*   **/rename "\<Novo Nome>"** (ou **/title**): Renomeia a conversa ativa atual para um nome descritivo (ex: `/rename "Gravidade Github"`). Isso facilita encontrar e continuar a sessão depois.
+*   **/switch** (ou **/resume**): Abre a lista interativa de conversas salvas no seu histórico para você alternar ou continuar outra sessão.
+*   **/goal "\<objetivo>"**: Inicia um modo de tarefa de longo prazo. A IA planejará e executará as ações de forma autônoma e profunda, sem parar até atingir o objetivo proposto.
+*   **/schedule**: Configura uma tarefa recorrente (cron) ou um timer de execução única em segundo plano.
+*   **/grill-me**: Abre uma sessão interativa de perguntas e respostas para refinar a arquitetura e tomar decisões de design de um plano de implementação.
+

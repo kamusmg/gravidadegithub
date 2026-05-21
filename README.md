@@ -70,18 +70,24 @@ Para iniciar o assistente ignorando os avisos de segurança de leitura/escrita d
 - `bp` ou `yolo` (Inicia uma nova sessão no modo YOLO/Bypass).
 - `by pass permissions on` (O comando completo simulando comportamento clássico).
 
-### 2. Colar Imagens no Chat (`clipwatch` / `start-print`)
-Para colar capturas de tela e prints diretamente no chat:
-1. Digite no terminal:
-   ```powershell
-   clipwatch
-   # ou
-   start-print
-   # ou
-   print
-   ```
-2. Tire seu print ou copie qualquer imagem (`Win+Shift+S`).
-3. Vá na janela da conversa do assistente e aperte **`Ctrl+V`**. O monitor converterá a imagem automaticamente para o link Markdown `![image](file:///...)` que o Gemini lê localmente.
+### 2. Colar Imagens no Chat e Terminal (`clipwatch` / `start-print`)
+Existem duas formas de colar capturas de tela como links Markdown (`![image](file:///...)`):
+
+* **Dentro do chat (Modo Daemon/Background):**
+  1. Digite no terminal antes de iniciar a IA (ou peça para a IA rodar em background):
+     ```powershell
+     clipwatch
+     # ou
+     start-print
+     # ou
+     print
+     ```
+  2. Tire seu print ou copie qualquer imagem (`Win+Shift+S`).
+  3. Vá no chat do assistente e aperte **`Ctrl+V`**. A imagem será convertida e colada automaticamente.
+
+* **Diretamente no prompt do PowerShell (Atalho local):**
+  - Copie uma imagem para a área de transferência.
+  - No prompt de comando do PowerShell (fora do chat), pressione **`Alt+V`**. O link Markdown apontando para o arquivo salvo localmente será inserido na posição atual do seu cursor.
 
 ### 3. Atalhos de Desenvolvedor no PowerShell
 - `g` $\rightarrow$ `git`
@@ -93,7 +99,17 @@ Para colar capturas de tela e prints diretamente no chat:
 - `dps` $\rightarrow$ `docker ps` formatado e limpo
 - `aliases` $\rightarrow$ Lista todos os atalhos ativos
 
-### 4. Comandos Especiais no Chat (Slash Commands)
+### 4. Automação de Tarefas com o Ralph (Custom Skills)
+O ambiente conta com o ecossistema de automação **Ralph** registrado como **Custom Skills** (como `ralph-implement`, `ralph-test`, `ralph-review`, etc.).
+
+* **Como ativar:** Não é necessário digitar comandos complexos. Basta pedir em linguagem de conversação no chat do assistente:
+  * *"Quero implementar com o Ralph no card CC-1234"*
+  * *"Executa o teste Ralph"*
+  * *"Revisa as alterações com o Ralph"*
+* **Como cancelar:** Se precisar abortar ou cancelar uma execução do Ralph em andamento, você pode pedir a qualquer momento no chat:
+  * *"Cancela o Ralph"* (aciona a skill `ralph-cancel`).
+
+### 5. Comandos Especiais no Chat (Slash Commands)
 Dentro do chat do Antigravity CLI (`agy`), você pode utilizar os seguintes comandos iniciando com `/` para controle de fluxo e sessões:
 
 *   **/rename "\<Novo Nome>"** (ou **/title**): Renomeia a conversa ativa atual para um nome descritivo (ex: `/rename "Gravidade Github"`). Isso facilita encontrar e continuar a sessão depois.

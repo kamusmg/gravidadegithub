@@ -73,8 +73,14 @@ Para iniciar o assistente ignorando os avisos de segurança de leitura/escrita d
 ### 2. Colar Imagens no Chat e Terminal (`clipwatch` / `start-print`)
 Existem duas formas de colar capturas de tela como links Markdown (`![image](file:///...)`):
 
-* **Dentro do chat (Modo Daemon/Background):**
-  1. Digite no terminal antes de iniciar a IA (ou peça para a IA rodar em background):
+* **Atalho no Desktop (Mais Prático! 🖥️):**
+  - Use o atalho **`Toggle ClipWatch`** criado na sua Área de Trabalho para ativar e desativar o monitoramento com apenas dois cliques.
+  - Ao ativar, prints copiados são convertidos para Markdown (ideal para colar no chat da IA via `Ctrl+V`).
+  - Ao desativar, seu clipboard volta ao normal, permitindo colar imagens normais no Windows (Discord, Slack, Paint, etc.).
+  - Um popup na tela de 2 segundos avisará o status atual do monitoramento.
+
+* **Dentro do chat (Modo Comando/Terminal):**
+  1. Digite no terminal antes de iniciar a IA:
      ```powershell
      clipwatch
      # ou

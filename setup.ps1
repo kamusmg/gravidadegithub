@@ -99,6 +99,21 @@ if (Test-Path $StarshipSource) {
     Write-Host "Configuracao do Starship copiada para: $StarshipDestFile" -ForegroundColor Green
 }
 
+# 7. Criar atalho do Toggle ClipWatch no Desktop
+Write-Host "Criando atalho de Toggle ClipWatch no Desktop..." -ForegroundColor Yellow
+try {
+    $WshShell = New-Object -ComObject WScript.Shell
+    $DesktopPath = [System.IO.Path]::Combine($env:USERPROFILE, "Desktop")
+    $Shortcut = $WshShell.CreateShortcut((Join-Path $DesktopPath "Toggle ClipWatch.lnk"))
+    $Shortcut.TargetPath = "powershell.exe"
+    $Shortcut.Arguments = "-WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File `"D:\projetos D\Gravidade Github\dotfiles\clipwatch\toggle_clipwatch.ps1`""
+    $Shortcut.IconLocation = "imageres.dll,80" # Ícone de câmera
+    $Shortcut.Save()
+    Write-Host "Atalho 'Toggle ClipWatch' criado na Area de Trabalho!" -ForegroundColor Green
+} catch {
+    Write-Warning "Nao foi possivel criar o atalho no Desktop: $_"
+}
+
 Write-Host ""
 Write-Host "=== Setup concluido! Reabra o terminal para aplicar as mudancas. ===" -ForegroundColor Green
 Write-Host "Para rodar o Antigravity com bypass de permissoes, use o comando:" -ForegroundColor Cyan

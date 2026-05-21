@@ -53,6 +53,35 @@ if (Get-Command xh -ErrorAction SilentlyContinue) {
 # Funções de Atalho para Antigravity (agy)
 # ========================================
 
+# Interceptador para agy (permite usar 'agy bp', 'agy yolo', 'agy by pass permissions on' e comandos normais)
+function agy {
+    $isBypass = $false
+    $skipCount = 0
+    
+    if ($args.Count -ge 1 -and ($args[0] -eq "bp" -or $args[0] -eq "yolo")) {
+        $isBypass = $true
+        $skipCount = 1
+    } elseif ($args.Count -ge 4 -and $args[0] -eq "by" -and $args[1] -eq "pass" -and ($args[2] -eq "permissions" -or $args[2] -eq "permission") -and $args[3] -eq "on") {
+        $isBypass = $true
+        $skipCount = 4
+    }
+    
+    if ($isBypass) {
+        $remainingArgs = $args[$skipCount..($args.Count - 1)]
+        Write-Host "Iniciando Antigravity CLI com bypass de permissões habilitado..." -ForegroundColor Cyan
+        
+        $realAgy = Get-Command agy.exe -ErrorAction SilentlyContinue | Where-Object { $_.CommandType -eq 'Application' } | Select-Object -First 1 -ExpandProperty Definition
+        if (-not $realAgy) { $realAgy = "agy.exe" }
+        
+        & $realAgy --dangerously-skip-permissions $remainingArgs
+    } else {
+        $realAgy = Get-Command agy.exe -ErrorAction SilentlyContinue | Where-Object { $_.CommandType -eq 'Application' } | Select-Object -First 1 -ExpandProperty Definition
+        if (-not $realAgy) { $realAgy = "agy.exe" }
+        
+        & $realAgy @args
+    }
+}
+
 # Função para iniciar o agy no modo interativo normal
 function agy-interactive {
     agy -i @args
@@ -61,7 +90,9 @@ function agy-interactive {
 # Função de bypass de permissões (Bypass Permissions On)
 function by-pass-permissions-on {
     Write-Host "Iniciando Antigravity CLI com bypass de permissões habilitado..." -ForegroundColor Cyan
-    agy --dangerously-skip-permissions @args
+    $realAgy = Get-Command agy.exe -ErrorAction SilentlyContinue | Where-Object { $_.CommandType -eq 'Application' } | Select-Object -First 1 -ExpandProperty Definition
+    if (-not $realAgy) { $realAgy = "agy.exe" }
+    & $realAgy --dangerously-skip-permissions @args
 }
 
 function bypass-permissions {
@@ -69,6 +100,15 @@ function bypass-permissions {
 }
 
 ${function:by pass permissions on} = {
+    by-pass-permissions-on @args
+}
+
+# Atalhos extremamente curtos e diretos para o terminal
+function bp {
+    by-pass-permissions-on @args
+}
+
+function yolo {
     by-pass-permissions-on @args
 }
 

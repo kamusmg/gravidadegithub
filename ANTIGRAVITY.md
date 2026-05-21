@@ -38,6 +38,8 @@ Formato: `type(scope): descricao em minuscula`
 
 ## Workflow
 - Start non-trivial tasks in plan mode
+- **Planning Communication (CLI rule):** When in planning mode, ALWAYS print the complete content of the implementation plan directly in the chat window so the user can read and review it inside the CLI environment. Do NOT rely solely on the `.md` file since the user cannot easily read it in the terminal.
+- **Obtain Approval:** Pause and wait for the user's explicit approval in the chat before running any modifying commands or writing project files. Once approved, proceed autonomously ("sem freio") until completion.
 - Break subtasks small enough to complete within a single context window
 - Use git worktrees for parallel development branches when beneficial
 - Vanilla Antigravity CLI with well-defined tasks outperforms complex fragmented workflows

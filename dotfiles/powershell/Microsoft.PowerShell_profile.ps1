@@ -152,3 +152,79 @@ function gl { git log --oneline --graph --decorate -20 }
 
 # Docker ps formatado
 function dps { docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" }
+
+# ========================================
+# Atalho Alt+v para colar imagem do Clipboard como Markdown Link
+# ========================================
+if (Get-Command Set-PSReadLineKeyHandler -ErrorAction SilentlyContinue) {
+    Set-PSReadLineKeyHandler -Key "Alt+v" -ScriptBlock {
+        Add-Type -AssemblyName System.Windows.Forms -ErrorAction SilentlyContinue
+        Add-Type -AssemblyName System.Drawing -ErrorAction SilentlyContinue
+        try {
+            if ([System.Windows.Forms.Clipboard]::ContainsImage()) {
+                $dir = "C:\Users\samue\Pictures\Agy_Clipboard"
+                if (-not (Test-Path $dir)) {
+                    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+                }
+                $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+                $filename = "clip_$timestamp.png"
+                $fullPath = Join-Path $dir $filename
+                
+                $img = [System.Windows.Forms.Clipboard]::GetImage()
+                $img.Save($fullPath, [System.Drawing.Imaging.ImageFormat]::Png)
+                $img.Dispose()
+                
+                $fileUri = "file:///" + $fullPath.Replace("\", "/")
+                $mdLink = "![image]($fileUri)"
+                [Microsoft.PowerShell.PSConsoleReadLine]::Insert($mdLink)
+            }
+        } catch {
+            # Falhar silenciosamente para não interromper a digitação
+        }
+    }
+}
+
+# ========================================
+# Monitor de Clipboard (clipwatch) para usar dentro do agy
+# ========================================
+function Start-ClipWatch {
+    Write-Host "=== Monitor de Clipboard Ativo ===" -ForegroundColor Green
+    Write-Host "Copie qualquer imagem (ex: Win+Shift+S) e ela será convertida em link Markdown." -ForegroundColor Cyan
+    Write-Host "Em seguida, basta usar Ctrl+V para colar no chat do agy!" -ForegroundColor Cyan
+    Write-Host "Pressione Ctrl+C para encerrar este monitor." -ForegroundColor Yellow
+    Write-Host "==================================" -ForegroundColor Green
+    
+    Add-Type -AssemblyName System.Windows.Forms -ErrorAction SilentlyContinue
+    Add-Type -AssemblyName System.Drawing -ErrorAction SilentlyContinue
+    
+    while ($true) {
+        try {
+            if ([System.Windows.Forms.Clipboard]::ContainsImage()) {
+                $dir = "C:\Users\samue\Pictures\Agy_Clipboard"
+                if (-not (Test-Path $dir)) {
+                    New-Item -ItemType Directory -Path $dir -Force | Out-Null
+                }
+                $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+                $filename = "clip_$timestamp.png"
+                $fullPath = Join-Path $dir $filename
+                
+                $img = [System.Windows.Forms.Clipboard]::GetImage()
+                $img.Save($fullPath, [System.Drawing.Imaging.ImageFormat]::Png)
+                $img.Dispose()
+                
+                $fileUri = "file:///" + $fullPath.Replace("\", "/")
+                $mdLink = "![image]($fileUri)"
+                
+                [System.Windows.Forms.Clipboard]::SetText($mdLink)
+                Write-Host "[+] Imagem convertida em link Markdown: $mdLink" -ForegroundColor Green
+            }
+        } catch {
+            # Ignorar erros temporários de acesso ao clipboard
+        }
+        Start-Sleep -Milliseconds 500
+    }
+}
+
+Set-SafeAlias clipwatch Start-ClipWatch
+
+

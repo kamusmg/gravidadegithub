@@ -226,5 +226,7 @@ function Start-ClipWatch {
 }
 
 Set-SafeAlias clipwatch Start-ClipWatch
+Set-SafeAlias start-print Start-ClipWatch
+Set-SafeAlias print Start-ClipWatch
 
 

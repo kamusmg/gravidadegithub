@@ -70,11 +70,15 @@ Para iniciar o assistente ignorando os avisos de segurança de leitura/escrita d
 - `bp` ou `yolo` (Inicia uma nova sessão no modo YOLO/Bypass).
 - `by pass permissions on` (O comando completo simulando comportamento clássico).
 
-### 2. Colar Imagens no Chat (`clipwatch`)
+### 2. Colar Imagens no Chat (`clipwatch` / `start-print`)
 Para colar capturas de tela e prints diretamente no chat:
 1. Digite no terminal:
    ```powershell
    clipwatch
+   # ou
+   start-print
+   # ou
+   print
    ```
 2. Tire seu print ou copie qualquer imagem (`Win+Shift+S`).
 3. Vá na janela da conversa do assistente e aperte **`Ctrl+V`**. O monitor converterá a imagem automaticamente para o link Markdown `![image](file:///...)` que o Gemini lê localmente.

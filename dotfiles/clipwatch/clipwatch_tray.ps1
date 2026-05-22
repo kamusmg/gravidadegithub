@@ -1,13 +1,25 @@
 # clipwatch_tray.ps1 - Aplicativo de bandeja do sistema para controle do ClipWatch
 # Permite ligar/desligar monitoramento de clipboard visualmente e via atalhos.
+# Usa Mutex global do sistema para alternância ultrarrápida e instância única.
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$ScriptDir = Split-Path $MyInvocation.MyCommand.Path -Parent
 $logFile = "$env:USERPROFILE\.gemini\clipwatch.log"
 $signalFile = "$env:TEMP\clipwatch_toggle.signal"
 $PicturesDir = "C:\Users\samue\Pictures\Agy_Clipboard"
+
+# 1. Validar instância única usando System Mutex
+$mutexName = "Local\ClipWatchTrayMutex"
+$createdNew = $false
+$script:mutex = New-Object System.Threading.Mutex($true, $mutexName, [ref]$createdNew)
+
+if (-not $createdNew) {
+    # Já existe uma instância rodando. Envia o sinalizador de toggle e sai imediatamente.
+    "Another instance detected. Sending toggle signal at $(Get-Date)" | Out-File $logFile -Append
+    New-Item -ItemType File -Path $signalFile -Force | Out-Null
+    exit
+}
 
 # Garantir que a pasta de fotos existe
 if (-not (Test-Path $PicturesDir)) {
@@ -55,46 +67,62 @@ function Get-StatusIcon ($active) {
     }
 }
 
-# Inicializar ícones pré-gerados para evitar vazamento de recursos e redraws custosos
+# Inicializar ícones pré-gerados
 $script:activeIcon = Get-StatusIcon -active $true
 $script:inactiveIcon = Get-StatusIcon -active $false
 
 # Atualização de estado visual e logs
 function Update-TrayState {
-    if ($script:isActive) {
-        $notifyIcon.Icon = $script:activeIcon
-        $notifyIcon.Text = "ClipWatch: ATIVADO (Prints -> Markdown)"
-        $menuItemToggle.Text = "Desativar Monitoramento"
-        "ClipWatch ativado no tray em $(Get-Date)" | Out-File $logFile -Append
-    } else {
-        $notifyIcon.Icon = $script:inactiveIcon
-        $notifyIcon.Text = "ClipWatch: DESATIVADO (Clipboard normal)"
-        $menuItemToggle.Text = "Ativar Monitoramento"
-        "ClipWatch desativado no tray em $(Get-Date)" | Out-File $logFile -Append
+    try {
+        if ($script:isActive) {
+            $notifyIcon.Icon = $script:activeIcon
+            $notifyIcon.Text = "ClipWatch: ATIVADO (Prints -> Markdown)"
+            $menuItemToggle.Text = "Desativar Monitoramento"
+            "ClipWatch ativado no tray em $(Get-Date)" | Out-File $logFile -Append
+        } else {
+            $notifyIcon.Icon = $script:inactiveIcon
+            $notifyIcon.Text = "ClipWatch: DESATIVADO (Clipboard normal)"
+            $menuItemToggle.Text = "Ativar Monitoramento"
+            "ClipWatch desativado no tray em $(Get-Date)" | Out-File $logFile -Append
+        }
+    } catch {
+        "[$(Get-Date)] Error in Update-TrayState: $_" | Out-File $logFile -Append
     }
 }
 
-# Toggle de ativação
+# Toggle de ativação protegido por try/catch
 function Toggle-ClipWatchState {
-    $script:isActive = -not $script:isActive
-    Update-TrayState
-    
-    $title = "ClipWatch Status"
-    $msg = if ($script:isActive) { "ATIVADO`nPrints copiados serão salvos e convertidos para Markdown!" } else { "DESATIVADO`nÁrea de transferência voltou ao comportamento padrão." }
-    $iconType = if ($script:isActive) { [System.Windows.Forms.ToolTipIcon]::Info } else { [System.Windows.Forms.ToolTipIcon]::Warning }
-    
-    $notifyIcon.ShowBalloonTip(2000, $title, $msg, $iconType)
+    try {
+        $script:isActive = -not $script:isActive
+        Update-TrayState
+        
+        $title = "ClipWatch Status"
+        $msg = if ($script:isActive) { "ATIVADO`nPrints copiados serão salvos e convertidos para Markdown!" } else { "DESATIVADO`nÁrea de transferência voltou ao comportamento padrão." }
+        $iconType = if ($script:isActive) { [System.Windows.Forms.ToolTipIcon]::Info } else { [System.Windows.Forms.ToolTipIcon]::Warning }
+        
+        $notifyIcon.ShowBalloonTip(2000, $title, $msg, $iconType)
+    } catch {
+        "[$(Get-Date)] Error in Toggle-ClipWatchState: $_" | Out-File $logFile -Append
+    }
 }
 
 # Fechamento limpo do App
 function Exit-ClipWatch {
-    $timer.Stop()
-    $notifyIcon.Visible = $false
-    $notifyIcon.Dispose()
-    
-    # Limpar ícones carregados
-    if ($script:activeIcon) { $script:activeIcon.Dispose() }
-    if ($script:inactiveIcon) { $script:inactiveIcon.Dispose() }
+    try {
+        $timer.Stop()
+        $notifyIcon.Visible = $false
+        $notifyIcon.Dispose()
+        
+        # Limpar ícones carregados
+        if ($script:activeIcon) { $script:activeIcon.Dispose() }
+        if ($script:inactiveIcon) { $script:inactiveIcon.Dispose() }
+        
+        # Liberar e fechar Mutex explicitamente
+        if ($script:mutex) {
+            $script:mutex.ReleaseMutex()
+            $script:mutex.Dispose()
+        }
+    } catch {}
     
     "ClipWatch tray app finalizado em $(Get-Date)" | Out-File $logFile -Append
     [System.Windows.Forms.Application]::Exit()
@@ -105,11 +133,15 @@ function Exit-ClipWatch {
 $notifyIcon = New-Object System.Windows.Forms.NotifyIcon
 $notifyIcon.Visible = $true
 
-# Tratar clique com o botão esquerdo para fazer toggle rápido
+# Tratar clique com o botão esquerdo do mouse de forma segura
 $notifyIcon.add_MouseClick({
     param($sender, $e)
-    if ($e.Button -eq [System.Windows.Forms.MouseButtons]::Left) {
-        Toggle-ClipWatchState
+    try {
+        if ($e.Button -eq [System.Windows.Forms.MouseButtons]::Left) {
+            Toggle-ClipWatchState
+        }
+    } catch {
+        "[$(Get-Date)] Error in MouseClick handler: $_" | Out-File $logFile -Append
     }
 })
 
@@ -123,8 +155,10 @@ $notifyIcon.ContextMenu = $contextMenu
 
 Update-TrayState
 
-# Mensagem inicial informando que iniciou
-$notifyIcon.ShowBalloonTip(2500, "ClipWatch Iniciado", "Rodando na bandeja do sistema.`n- Clique esquerdo: Liga/Desliga`n- Clique direito: Menu de opções", [System.Windows.Forms.ToolTipIcon]::Info)
+# Mensagem inicial informando que iniciou (protegida por try/catch)
+try {
+    $notifyIcon.ShowBalloonTip(2500, "ClipWatch Iniciado", "Rodando na bandeja do sistema.`n- Clique esquerdo: Liga/Desliga`n- Clique direito: Menu de opções", [System.Windows.Forms.ToolTipIcon]::Info)
+} catch {}
 
 # Timer integrado para monitorar tanto os sinais externos quanto o clipboard
 $timer = New-Object System.Windows.Forms.Timer
@@ -135,7 +169,9 @@ $timer.add_Tick({
         try {
             Remove-Item $signalFile -Force -ErrorAction SilentlyContinue
             Toggle-ClipWatchState
-        } catch {}
+        } catch {
+            "[$(Get-Date)] Error resolving toggle signal file: $_" | Out-File $logFile -Append
+        }
     }
     
     # 2. Monitorar clipboard se ativo
@@ -159,7 +195,7 @@ $timer.add_Tick({
                 }
             }
         } catch {
-            # Evitar travar caso o clipboard esteja ocupado
+            # Evitar travar caso o clipboard esteja temporariamente ocupado
         }
     }
 })

@@ -13,6 +13,7 @@ Ele inclui:
 ## 📁 Estrutura de Pastas
 
 ```text
+├── _lixo/                                        # Backups de segurança de modificações locais
 ├── dotfiles/
 │   ├── powershell/
 │   │   └── Microsoft.PowerShell_profile.ps1 # Profile customizado (aliases, atalhos, clipwatch)
@@ -22,7 +23,7 @@ Ele inclui:
 │   └── gravidade-plugin/                     # Plugin principal registrado no agy
 │       ├── hooks/                            # Hooks executados no ciclo do agy
 │       └── skills/                           # Skills com instruções de contexto
-├── setup.ps1                                 # Script automatizado de instalação/vinculação
+├── setup.ps1                                 # Script automatizado de instalação/vinculação (portátil)
 └── README.md                                 # Instruções de uso e instalação (esta página)
 ```
 
@@ -33,13 +34,11 @@ Ele inclui:
 Se você precisar formatar o computador ou instalar essas configurações em uma nova máquina, siga estes passos simples:
 
 ### 1. Clonar o Repositório
-Clone o repositório na pasta de sua preferência. O padrão configurado no script é `D:\projetos D\Gravidade Github`:
+Clone o repositório na pasta de sua preferência. O instalador agora é portátil e detecta o diretório de execução automaticamente. Exemplo de clonagem padrão:
 
 ```powershell
 git clone https://github.com/kamusmg/gravidadegithub.git "D:\projetos D\Gravidade Github"
 ```
-
-*(Nota: Se clonar em outro diretório, lembre-se de atualizar o caminho da variável `$RepoDir` na linha 6 do [setup.ps1](file:///D:/projetos%20D/Gravidade%20Github/setup.ps1) antes de executar).*
 
 ### 2. Executar o Script de Configuração
 Abra o **Windows PowerShell** e execute o script de instalação para vincular o plugin à pasta global do Antigravity CLI (`~/.gemini/config/plugins`) e configurar o profile:
@@ -108,8 +107,9 @@ Existem duas formas de colar capturas de tela como links Markdown (`![image](fil
 ### 4. Automação de Tarefas com o Ralph (Custom Skills)
 O ambiente conta com o ecossistema de automação **Ralph** registrado como **Custom Skills** (como `ralph-implement`, `ralph-test`, `ralph-review`, etc.).
 
+* **Flexibilidade de Tarefas:** A skill `ralph-implement` foi estendida para aceitar tanto tickets do Jira (ex: `CC-1234`) quanto descrições de tarefas genéricas em texto livre (ex: *"Ralph, implemente a funcionalidade X..."*). Isso permite utilizar o loop de TDD do Ralph em qualquer tipo de projeto ou repositório.
 * **Como ativar:** Não é necessário digitar comandos complexos. Basta pedir em linguagem de conversação no chat do assistente:
-  * *"Quero implementar com o Ralph no card CC-1234"*
+  * *"Quero implementar com o Ralph no card CC-1234"* ou *"Ralph, implemente a funcionalidade X"*
   * *"Executa o teste Ralph"*
   * *"Revisa as alterações com o Ralph"*
 * **Como cancelar:** Se precisar abortar ou cancelar uma execução do Ralph em andamento, você pode pedir a qualquer momento no chat:

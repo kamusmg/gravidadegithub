@@ -8,6 +8,29 @@ Ele inclui:
 - **Integração com PowerShell** via Profile, adicionando atalhos inteligentes de bypass de permissão e utilitários.
 - **Monitor de Imagens do Clipboard (`clipwatch`)** para colagem rápida de capturas de tela diretamente no chat da IA via `Ctrl+V`.
 
+> [!IMPORTANT]
+> ### 🚀 Como Instalar Rápido e Sem Erros (Guia Definitivo do Zero)
+> Se você ou seus amigos estão instalando pela primeira vez, sigam este passo a passo à prova de falhas:
+> 
+> 1. **Abra o Windows PowerShell** (pesquise "PowerShell" no menu Iniciar).
+> 2. **Copie, cole e execute** o comando abaixo para baixar o repositório no seu computador:
+>    ```powershell
+>    git clone https://github.com/kamusmg/gravidadegithub.git "D:\projetos D\Gravidade Github"
+>    ```
+>    *(Nota: Você pode clonar em qualquer pasta de sua preferência! O instalador é portátil e detectará a pasta de forma 100% automática).*
+> 3. **Acesse a pasta** onde você acabou de baixar o repositório:
+>    ```powershell
+>    cd "D:\projetos D\Gravidade Github"
+>    ```
+>    *(Ajuste o caminho se tiver clonado em outra pasta).*
+> 4. **Execute o script de instalação** rodando este comando exato (ele libera a segurança temporariamente apenas para esta instalação):
+>    ```powershell
+>    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; .\setup.ps1
+>    ```
+> 5. **Reinicie o Terminal:** Feche a janela atual do PowerShell e abra uma nova janela para que todas as configurações e aliases sejam ativados.
+> 
+> *Para testar se funcionou: Digite `aliases` no novo terminal e aperte Enter. A lista de atalhos inteligentes deve aparecer na tela!*
+
 ---
 
 ## 📁 Estrutura de Pastas

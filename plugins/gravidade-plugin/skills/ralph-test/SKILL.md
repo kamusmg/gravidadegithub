@@ -100,13 +100,24 @@ Siga o fluxo TDD:
 4. Commite
 5. Atualize progress.md e journal.md
 
-### 5. Lancar o runner em background
+### 5. Lancar o loop local (In-Session)
 
-```bash
-node ~/.claude/scripts/ralph-runner.js \
-  --task-type test \
-  --task-id "test-<descricao-slug>" \
-  --max-iterations 10 \
-  --completion-promise "DONE" \
-  --cwd "$(pwd)" &
+Apos completar o primeiro criterio, crie o arquivo `.gemini/ralph-loop.local.md` para iniciar o loop in-session:
+
+```markdown
+---
+iteration: 1
+max_iterations: 10
+completion_promise: DONE
+task_type: test
+task_input: "<DESCRICAO_DO_QUE_TESTAR>"
+---
+Continue working on writing and passing tests. Output <promise>DONE</promise> when complete.
 ```
+
+O hook de Stop do Antigravity detectará este arquivo e manterá o agente em loop automático até que você retorne `<promise>DONE</promise>`.
+
+Informe ao usuario:
+- "Ralph Loop local de testes ativado"
+- "O loop continuará no chat atual até ser finalizado com o envio de <promise>DONE</promise>"
+- "Você pode cancelar excluindo o arquivo `.gemini/ralph-loop.local.md`"

@@ -15,12 +15,12 @@ Ele inclui:
 > 1. **Abra o Windows PowerShell** (pesquise "PowerShell" no menu Iniciar).
 > 2. **Copie, cole e execute** o comando abaixo para baixar o repositório no seu computador:
 >    ```powershell
->    git clone https://github.com/kamusmg/gravidadegithub.git "D:\projetos D\Gravidade Github"
+>    git clone https://github.com/kamusmg/gravidadegithub.git "C:\projetos\gravidadegithub"
 >    ```
 >    *(Nota: Você pode clonar em qualquer pasta de sua preferência! O instalador é portátil e detectará a pasta de forma 100% automática).*
 > 3. **Acesse a pasta** onde você acabou de baixar o repositório:
 >    ```powershell
->    cd "D:\projetos D\Gravidade Github"
+>    cd "C:\projetos\gravidadegithub"
 >    ```
 >    *(Ajuste o caminho se tiver clonado em outra pasta).*
 > 4. **Execute o script de instalação** rodando este comando exato (ele libera a segurança temporariamente apenas para esta instalação):
@@ -60,7 +60,7 @@ Se você precisar formatar o computador ou instalar essas configurações em uma
 Clone o repositório na pasta de sua preferência. O instalador agora é portátil e detecta o diretório de execução automaticamente. Exemplo de clonagem padrão:
 
 ```powershell
-git clone https://github.com/kamusmg/gravidadegithub.git "D:\projetos D\Gravidade Github"
+git clone https://github.com/kamusmg/gravidadegithub.git "C:\projetos\gravidadegithub"
 ```
 
 ### 2. Executar o Script de Configuração
@@ -68,7 +68,7 @@ Abra o **Windows PowerShell** e execute o script de instalação para vincular o
 
 ```powershell
 # Acesse o diretório
-cd "D:\projetos D\Gravidade Github"
+cd "C:\projetos\gravidadegithub"
 
 # Execute o instalador (caso necessário, libere a política de execução)
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass

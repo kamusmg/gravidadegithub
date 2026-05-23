@@ -1,7 +1,7 @@
 ---
 name: ralph-implement
 description: >
-  Autonomous implementation loop with phase orchestration. Reads a Jira card, implements with TDD, runs extra tests, optimizes perf if needed, updates docs, and opens PR. Each phase is a sub-loop with clean context. Input — Jira ticket ID (e.g., CC-1234).
+  Autonomous implementation loop with phase orchestration. Implements a feature with TDD, runs extra tests, optimizes perf if needed, updates docs, and opens PR. Each phase is a sub-loop with clean context. Input — Task description or ID.
 ---
 
 # Ralph Loop v2 — Implement (Orquestrador Master)
@@ -15,15 +15,14 @@ Loop autonomo com **5 fases sequenciais**:
 
 ## Input
 
-O usuario fornece o ticket do Jira: `CC-1234` (ou URL completa).
+O usuario fornece a descricao da tarefa (ou opcionalmente um ticket do Jira).
 
 ## Arquitetura
 
-Este skill usa o **loop externo com fases** (ralph-runner.js):
-- Primeira iteracao roda AQUI (Claude interativo) — tem acesso a MCP, browser, Jira
-- O runner executa fases sequencialmente, cada uma com seu proprio prompt e completion criteria
-- Fases opcionais (perf, docs) sao puladas automaticamente se nao aplicaveis
-- Todo estado persiste em `.claude/ralph-state/<TICKET_ID>/`
+Este skill usa o **loop local ou externo com fases**:
+- Primeira iteracao roda AQUI (Antigravity interativo)
+- Se rodando via loop local, o estado persiste em `.gemini/ralph-state/<TASK_ID>/` ou `.claude/ralph-state/<TASK_ID>/`
+- Todo estado persiste em `.gemini/ralph-state/<TASK_ID>/`
 
 ## Primeira Iteracao (interativa — VOCE FAZ ISSO AGORA)
 
@@ -266,23 +265,27 @@ Siga o fluxo TDD para o primeiro criterio:
 5. Commite
 6. Atualize progress.md e journal.md
 
-### 5. Lancar o runner em background
+### 5. Lancar o loop local (In-Session)
 
-Apos completar o primeiro criterio, lance o loop externo:
+Apos completar o primeiro criterio, crie o arquivo `.gemini/ralph-loop.local.md` para iniciar o loop in-session:
 
-```bash
-node ~/.claude/scripts/ralph-runner.js \
-  --task-type implement \
-  --task-id <TICKET_ID> \
-  --max-iterations 30 \
-  --cwd "$(pwd)" &
+```markdown
+---
+iteration: 1
+max_iterations: 30
+completion_promise: DONE
+task_type: implement
+task_input: "<DESCRICAO_DA_TAREFA>"
+---
+Continue working on implementing the task. Output <promise>DONE</promise> when complete.
 ```
 
+O hook de Stop do Antigravity detectará este arquivo e manterá o agente em loop automático até que você retorne `<promise>DONE</promise>`.
+
 Informe ao usuario:
-- "Ralph Loop lancado em background com 5 fases: implement → test → perf → docs → pr"
-- "Monitore com: `tail -f .claude/ralph-state/<TICKET_ID>/output.log`"
-- "Cancele com: `/ralph-cancel`"
-- "Fases perf e docs serao puladas automaticamente se nao forem aplicaveis"
+- "Ralph Loop local ativado com 5 fases: implement → test → perf → docs → pr"
+- "O loop continuará no chat atual até ser finalizado com o envio de <promise>DONE</promise>"
+- "Você pode cancelar excluindo o arquivo `.gemini/ralph-loop.local.md`"
 
 ## Como o Runner Trabalha
 

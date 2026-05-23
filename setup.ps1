@@ -3,7 +3,7 @@
 
 $ErrorActionPreference = "Stop"
 
-$RepoDir = "D:\projetos D\Gravidade Github"
+$RepoDir = $PSScriptRoot
 $PluginsDestDir = "$env:USERPROFILE\.gemini\config\plugins"
 $PluginTarget = Join-Path $PluginsDestDir "gravidade-plugin"
 $PluginSource = Join-Path $RepoDir "plugins\gravidade-plugin"

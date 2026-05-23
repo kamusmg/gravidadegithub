@@ -106,7 +106,8 @@ try {
     $DesktopPath = [System.IO.Path]::Combine($env:USERPROFILE, "Desktop")
     $Shortcut = $WshShell.CreateShortcut((Join-Path $DesktopPath "Toggle ClipWatch.lnk"))
     $Shortcut.TargetPath = "powershell.exe"
-    $Shortcut.Arguments = "-WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File `"D:\projetos D\Gravidade Github\dotfiles\clipwatch\toggle_clipwatch.ps1`""
+    $ToggleScript = Join-Path $RepoDir "dotfiles\clipwatch\toggle_clipwatch.ps1"
+    $Shortcut.Arguments = "-WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File `"$ToggleScript`""
     $Shortcut.IconLocation = "imageres.dll,80" # Ícone de câmera
     $Shortcut.Save()
     Write-Host "Atalho 'Toggle ClipWatch' criado na Area de Trabalho!" -ForegroundColor Green

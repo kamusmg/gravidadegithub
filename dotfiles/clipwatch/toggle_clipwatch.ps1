@@ -2,7 +2,7 @@
 # Invoca a bandeja silenciosamente. O controle de ativação/desativação e
 # instância única é tratado internamente pelo Mutex do clipwatch_tray.ps1.
 
-$TrayScript = "D:\projetos D\Gravidade Github\dotfiles\clipwatch\clipwatch_tray.ps1"
+$TrayScript = Join-Path $PSScriptRoot "clipwatch_tray.ps1"
 $logFile = "$env:USERPROFILE\.gemini\clipwatch.log"
 
 if (-not (Test-Path $TrayScript)) {
